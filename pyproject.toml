@@ -12,6 +12,18 @@ dependencies = [
   "Django>=4.2",
   "posthog>=7.6.0",
 ]
+classifiers = [
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Typing :: Typed",
+]
+license = {text = "MIT"}
+authors = [{ name = "João Freires", email = "joaofreires@tutanota.com" }]
 
 [project.optional-dependencies]
 dev = [
