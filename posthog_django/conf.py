@@ -41,6 +41,10 @@ class PosthogSettings:
     request_extra_tags: Callable[[Any], dict[str, Any]] | None
     request_filter: Callable[[Any], bool] | None
     capture_exceptions: bool
+    on_error_mode: str
+    validate_on_startup: bool
+    validate_event_name: str
+    validate_distinct_id: str
     user_id_field: str
     session_distinct_id_key: str
     store_distinct_id_in_session: bool
@@ -86,6 +90,10 @@ def get_settings() -> PosthogSettings:
     if not callable(groups_resolver):
         groups_resolver = None
 
+    on_error_mode = str(_get_setting("POSTHOG_ERROR_MODE", "log")).lower()
+    if on_error_mode not in {"log", "raise", "ignore"}:
+        on_error_mode = "log"
+
     return PosthogSettings(
         project_api_key=project_api_key,
         host=_get_setting("POSTHOG_HOST", None),
@@ -123,6 +131,14 @@ def get_settings() -> PosthogSettings:
         request_extra_tags=request_extra_tags,
         request_filter=request_filter,
         capture_exceptions=bool(capture_exceptions),
+        on_error_mode=on_error_mode,
+        validate_on_startup=bool(_get_setting("POSTHOG_VALIDATE_ON_STARTUP", False)),
+        validate_event_name=_get_setting(
+            "POSTHOG_VALIDATE_EVENT_NAME", "posthog_django_validation"
+        ),
+        validate_distinct_id=_get_setting(
+            "POSTHOG_VALIDATE_DISTINCT_ID", "posthog_django"
+        ),
         user_id_field=_get_setting("POSTHOG_USER_ID_FIELD", "pk"),
         session_distinct_id_key=_get_setting(
             "POSTHOG_SESSION_DISTINCT_ID_KEY", "posthog_distinct_id"

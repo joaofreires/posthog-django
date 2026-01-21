@@ -60,6 +60,7 @@ def dashboard(request):
 - `POSTHOG_ENABLED`: enable/disable integration (default: enabled if API key is set).
 - `POSTHOG_DEBUG`: enable SDK debug logging.
 - `POSTHOG_DISABLE_GEOIP`: disable GeoIP lookup (default: True).
+- `POSTHOG_ERROR_MODE`: `log`, `raise`, or `ignore` for SDK errors (default: `log`).
 - `POSTHOG_MW_CAPTURE_EXCEPTIONS`: capture exceptions in middleware (default: True).
 - `POSTHOG_MW_EXTRA_TAGS`: callable returning extra context tags.
 - `POSTHOG_MW_REQUEST_FILTER`: callable returning False to skip tracking.
@@ -70,6 +71,9 @@ def dashboard(request):
 - `POSTHOG_FLAG_DEFINITIONS_CACHE_PREFIX`: cache key prefix for flag definitions.
 - `POSTHOG_FEATURE_FLAGS_CACHE_TTL`: seconds to cache feature flag results.
 - `POSTHOG_FEATURE_FLAGS_CACHE_PREFIX`: cache key prefix for feature flag results.
+- `POSTHOG_VALIDATE_ON_STARTUP`: validate configuration on app startup.
+- `POSTHOG_VALIDATE_EVENT_NAME`: event used for validation.
+- `POSTHOG_VALIDATE_DISTINCT_ID`: distinct ID used for validation.
 
 ## Notes
 
@@ -78,3 +82,8 @@ def dashboard(request):
 - Result caching for feature flags is opt-in by setting
   `POSTHOG_FEATURE_FLAGS_CACHE_TTL`. To preserve `$feature_flag_called` events,
   keep `send_feature_flag_events=True` (cache is skipped in that case).
+
+## Example project
+
+See `example/` for a minimal Django project that wires in the middleware and
+shows event capture + feature flags.

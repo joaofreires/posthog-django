@@ -8,6 +8,9 @@ class PosthogDjangoConfig(AppConfig):
     name = "posthog_django"
 
     def ready(self) -> None:
-        from .client import configure
+        from .client import configure, validate_client
+        from .conf import get_settings
 
         configure()
+        if get_settings().validate_on_startup:
+            validate_client()
