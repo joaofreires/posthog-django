@@ -1,5 +1,7 @@
 # posthog-django
 
+This is a community package and is not an official PostHog-maintained library.
+
 Django helpers for the PostHog Python SDK. This package provides a Django-ready
 client, middleware, feature flag helpers, and a small sugar API.
 
