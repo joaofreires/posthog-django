@@ -1,0 +1,59 @@
+[build-system]
+requires = ["hatchling>=1.24.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "posthog-django"
+version = "0.1.0"
+description = "Django integration helpers for the PostHog Python SDK."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "Django>=4.2",
+  "posthog>=7.6.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "ruff>=0.6.8",
+  "uv>=0.4.30",
+  "pytest>=8.2.0",
+  "pytest-django>=4.8.0",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["posthog_django"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"posthog_django/py.typed" = "posthog_django/py.typed"
+
+[tool.hatch.build.targets.sdist]
+include = ["/posthog_django", "/README.md", "/pyproject.toml"]
+
+[tool.ruff]
+line-length = 100
+select = ["E", "F", "I", "N", "UP", "B"]
+target-version = "py310"
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "tests.settings"
+python_files = ["test_*.py"]
+pythonpath = ["."]
+django_find_project = false
+testpaths = ["tests"]
+
+[tool.ruff.lint.flake8-pytest-style]
+fixture-parentheses = false
+mark-parentheses = false
+
+[tool.ruff.lint.flake8-type-checking]
+strict = true
+
+[tool.ruff.lint.isort]
+force-single-line = true
+known-first-party = ["posthog_django"]
+no-lines-before = ["local-folder"]
+order-by-type = false
+
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "all"
