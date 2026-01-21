@@ -23,6 +23,10 @@ POSTHOG_PERSONAL_API_KEY = "phx_your_personal_key"
 POSTHOG_HOST = "https://app.posthog.com"
 POSTHOG_ERROR_MODE = "log"  # log | raise | ignore
 POSTHOG_VALIDATE_ON_STARTUP = True
+POSTHOG_ENABLE_EXCEPTION_AUTOCAPTURE = True
+POSTHOG_CAPTURE_EXCEPTION_CODE_VARIABLES = False
+POSTHOG_CODE_VARIABLES_MASK_PATTERNS = [r"(?i).*password.*", r"(?i).*token.*"]
+POSTHOG_CODE_VARIABLES_IGNORE_PATTERNS = [r"^__.*"]
 ```
 
 Then visit:

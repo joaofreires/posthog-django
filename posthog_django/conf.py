@@ -24,6 +24,10 @@ class PosthogSettings:
     feature_flags_request_timeout_seconds: int
     super_properties: dict[str, Any] | None
     enable_exception_autocapture: bool
+    capture_exception_code_variables: bool
+    code_variables_mask_patterns: list[str] | None
+    code_variables_ignore_patterns: list[str] | None
+    in_app_modules: list[str] | None
     log_captured_exceptions: bool
     project_root: str | None
     privacy_mode: bool
@@ -90,6 +94,13 @@ def get_settings() -> PosthogSettings:
     if not callable(groups_resolver):
         groups_resolver = None
 
+    def _as_str_list(value: Any) -> list[str] | None:
+        if value is None:
+            return None
+        if isinstance(value, (list, tuple)) and all(isinstance(item, str) for item in value):
+            return list(value)
+        return None
+
     on_error_mode = str(_get_setting("POSTHOG_ERROR_MODE", "log")).lower()
     if on_error_mode not in {"log", "raise", "ignore"}:
         on_error_mode = "log"
@@ -110,6 +121,16 @@ def get_settings() -> PosthogSettings:
         ),
         super_properties=_get_setting("POSTHOG_SUPER_PROPERTIES", None),
         enable_exception_autocapture=_get_setting("POSTHOG_ENABLE_EXCEPTION_AUTOCAPTURE", False),
+        capture_exception_code_variables=_get_setting(
+            "POSTHOG_CAPTURE_EXCEPTION_CODE_VARIABLES", False
+        ),
+        code_variables_mask_patterns=_as_str_list(
+            _get_setting("POSTHOG_CODE_VARIABLES_MASK_PATTERNS", None)
+        ),
+        code_variables_ignore_patterns=_as_str_list(
+            _get_setting("POSTHOG_CODE_VARIABLES_IGNORE_PATTERNS", None)
+        ),
+        in_app_modules=_as_str_list(_get_setting("POSTHOG_IN_APP_MODULES", None)),
         log_captured_exceptions=_get_setting("POSTHOG_LOG_CAPTURED_EXCEPTIONS", False),
         project_root=_get_setting("POSTHOG_PROJECT_ROOT", None),
         privacy_mode=_get_setting("POSTHOG_PRIVACY_MODE", False),

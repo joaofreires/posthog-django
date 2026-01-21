@@ -61,6 +61,11 @@ def dashboard(request):
 - `POSTHOG_DEBUG`: enable SDK debug logging.
 - `POSTHOG_DISABLE_GEOIP`: disable GeoIP lookup (default: True).
 - `POSTHOG_ERROR_MODE`: `log`, `raise`, or `ignore` for SDK errors (default: `log`).
+- `POSTHOG_ENABLE_EXCEPTION_AUTOCAPTURE`: enable exception autocapture.
+- `POSTHOG_CAPTURE_EXCEPTION_CODE_VARIABLES`: capture code variables for exceptions.
+- `POSTHOG_CODE_VARIABLES_MASK_PATTERNS`: list of regex patterns to mask.
+- `POSTHOG_CODE_VARIABLES_IGNORE_PATTERNS`: list of regex patterns to ignore.
+- `POSTHOG_IN_APP_MODULES`: list of module prefixes for in-app frames.
 - `POSTHOG_MW_CAPTURE_EXCEPTIONS`: capture exceptions in middleware (default: True).
 - `POSTHOG_MW_EXTRA_TAGS`: callable returning extra context tags.
 - `POSTHOG_MW_REQUEST_FILTER`: callable returning False to skip tracking.
@@ -74,6 +79,33 @@ def dashboard(request):
 - `POSTHOG_VALIDATE_ON_STARTUP`: validate configuration on app startup.
 - `POSTHOG_VALIDATE_EVENT_NAME`: event used for validation.
 - `POSTHOG_VALIDATE_DISTINCT_ID`: distinct ID used for validation.
+
+## Exception code variables
+
+Enable code variable capture globally:
+
+```python
+# settings.py
+POSTHOG_ENABLE_EXCEPTION_AUTOCAPTURE = True
+POSTHOG_CAPTURE_EXCEPTION_CODE_VARIABLES = True
+```
+
+Override capture in specific blocks:
+
+```python
+from posthog import new_context
+from posthog_django import (
+    set_capture_exception_code_variables_context,
+    set_code_variables_mask_patterns_context,
+    set_code_variables_ignore_patterns_context,
+)
+
+with new_context():
+    set_capture_exception_code_variables_context(True)
+    set_code_variables_mask_patterns_context([r".*password.*"])
+    set_code_variables_ignore_patterns_context([r"^__.*"])
+    do_sensitive_work()
+```
 
 ## Notes
 

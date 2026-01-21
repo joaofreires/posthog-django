@@ -26,4 +26,7 @@ def error(request):
 
 
 def middleware_captured_error(request):
-    raise ValueError("This error is captured by middleware")
+    dividend = 10
+    divisor = 0
+    quotient = dividend / divisor  # This will raise a ZeroDivisionError
+    return JsonResponse({"quotient": quotient})

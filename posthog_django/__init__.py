@@ -1,5 +1,9 @@
 from __future__ import annotations
 
+from posthog.contexts import set_capture_exception_code_variables_context
+from posthog.contexts import set_code_variables_ignore_patterns_context
+from posthog.contexts import set_code_variables_mask_patterns_context
+
 from .client import configure
 from .client import get_client
 from .client import is_enabled
@@ -65,6 +69,15 @@ class DjangoPosthog:
     def client(self):
         return get_client()
 
+    def set_capture_exception_code_variables_context(self, *args, **kwargs):
+        return set_capture_exception_code_variables_context(*args, **kwargs)
+
+    def set_code_variables_mask_patterns_context(self, *args, **kwargs):
+        return set_code_variables_mask_patterns_context(*args, **kwargs)
+
+    def set_code_variables_ignore_patterns_context(self, *args, **kwargs):
+        return set_code_variables_ignore_patterns_context(*args, **kwargs)
+
 
 posthog = DjangoPosthog()
 
@@ -90,4 +103,7 @@ __all__ = [
     "set",
     "set_distinct_id",
     "set_once",
+    "set_capture_exception_code_variables_context",
+    "set_code_variables_mask_patterns_context",
+    "set_code_variables_ignore_patterns_context",
 ]

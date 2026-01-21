@@ -73,3 +73,16 @@ POSTHOG_HOST = os.getenv("POSTHOG_HOST", "https://app.posthog.com")
 POSTHOG_FEATURE_FLAGS_CACHE_TTL = 60
 POSTHOG_ERROR_MODE = os.getenv("POSTHOG_ERROR_MODE", "log")
 POSTHOG_VALIDATE_ON_STARTUP = os.getenv("POSTHOG_VALIDATE_ON_STARTUP", "true").lower() == "true"
+POSTHOG_ENABLE_EXCEPTION_AUTOCAPTURE = (
+    os.getenv("POSTHOG_ENABLE_EXCEPTION_AUTOCAPTURE", "true").lower() == "true"
+)
+POSTHOG_CAPTURE_EXCEPTION_CODE_VARIABLES = (
+    os.getenv("POSTHOG_CAPTURE_EXCEPTION_CODE_VARIABLES", "true").lower() == "true"
+)
+POSTHOG_CODE_VARIABLES_MASK_PATTERNS = [
+    r"(?i).*password.*",
+    r"(?i).*token.*",
+]
+POSTHOG_CODE_VARIABLES_IGNORE_PATTERNS = [
+    r"^__.*",
+]
