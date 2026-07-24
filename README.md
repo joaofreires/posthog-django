@@ -58,6 +58,14 @@ def dashboard(request):
 
 - `POSTHOG_PROJECT_API_KEY` or `POSTHOG_API_KEY`: required.
 - `POSTHOG_PERSONAL_API_KEY`: required for local feature flag evaluation.
+- `POSTHOG_ENABLE_FEATURE_FLAGS`: enable feature flag helpers and SDK local
+  evaluation support (default: True). Set to `False` when feature flags are not
+  used.
+- `POSTHOG_ENABLE_LOCAL_EVALUATION`: poll and evaluate feature flags locally
+  (default: True when `POSTHOG_PERSONAL_API_KEY` is configured; otherwise it is
+  automatically disabled). This does not disable remote feature flag evaluation;
+  use `POSTHOG_ENABLE_FEATURE_FLAGS=False` to disable the `posthog_django`
+  feature flag helpers and SDK local evaluation.
 - `POSTHOG_HOST`: PostHog host (default `https://app.posthog.com`).
 - `POSTHOG_ENABLED`: enable/disable integration (default: enabled if API key is set).
 - `POSTHOG_DEBUG`: enable SDK debug logging.
@@ -69,6 +77,8 @@ def dashboard(request):
 - `POSTHOG_CODE_VARIABLES_IGNORE_PATTERNS`: list of regex patterns to ignore.
 - `POSTHOG_IN_APP_MODULES`: list of module prefixes for in-app frames.
 - `POSTHOG_MW_CAPTURE_EXCEPTIONS`: capture exceptions in middleware (default: True).
+- `POSTHOG_MW_CAPTURE_VIEWS`: capture an event after each completed response (default: False).
+- `POSTHOG_MW_VIEW_EVENT_NAME`: event name used for middleware view capture (default: `$pageview`).
 - `POSTHOG_MW_EXTRA_TAGS`: callable returning extra context tags.
 - `POSTHOG_MW_REQUEST_FILTER`: callable returning False to skip tracking.
 - `POSTHOG_MW_TAG_MAP`: callable to mutate tags before they are added.
@@ -111,6 +121,10 @@ with new_context():
 
 ## Notes
 
+- `POSTHOG_ENABLE_FEATURE_FLAGS=False` does not modify the raw PostHog SDK client
+  returned by `get_client()`, `posthog.client()`, or exposed as `request.posthog`.
+  Calls made directly on that client bypass the `posthog_django` feature flag
+  helpers and their settings.
 - Feature flag definition caching uses the configured Django cache backend and
   is enabled by default when a cache is available.
 - Result caching for feature flags is opt-in by setting

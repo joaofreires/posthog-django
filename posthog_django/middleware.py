@@ -8,6 +8,7 @@ from posthog import contexts
 
 from .client import get_client
 from .conf import get_settings
+from .events import capture
 from .utils import build_request_tags
 from .utils import get_or_create_distinct_id
 from .utils import get_request_header
@@ -39,6 +40,8 @@ class PosthogContextMiddleware:
         config = get_settings()
         self.request_filter = config.request_filter
         self.capture_exceptions = config.capture_exceptions
+        self.capture_views = config.capture_views
+        self.view_event_name = config.view_event_name
         self.session_header = config.session_id_header
         self.client = get_client()
         self.user_id_field = config.user_id_field
@@ -60,6 +63,20 @@ class PosthogContextMiddleware:
         if self.client is not None:
             request.posthog = self.client
 
+    def _capture_view(self, request: Any, response: Any) -> None:
+        if not self.capture_views:
+            return
+
+        properties: dict[str, Any] = {
+            "$response_status_code": getattr(response, "status_code", None),
+        }
+        resolver_match = getattr(request, "resolver_match", None)
+        view_name = getattr(resolver_match, "view_name", None)
+        if view_name:
+            properties["$django_view_name"] = view_name
+
+        capture(self.view_event_name, request=request, properties=properties)
+
     def __call__(self, request: Any) -> Any | Awaitable[Any]:
         if self._is_coroutine:
             return self.__acall__(request)
@@ -76,7 +93,9 @@ class PosthogContextMiddleware:
             client=self.client,
         ):
             self._apply_context(request, user_id=user_id, user_email=user_email)
-            return self.get_response(request)
+            response = self.get_response(request)
+            self._capture_view(request, response)
+            return response
 
     async def __acall__(self, request: Any) -> Any:
         if self.request_filter and not self.request_filter(request):
@@ -98,7 +117,9 @@ class PosthogContextMiddleware:
             client=self.client,
         ):
             self._apply_context(request, user_id=user_id, user_email=user_email)
-            return await self.get_response(request)
+            response = await self.get_response(request)
+            self._capture_view(request, response)
+            return response
 
     def process_exception(self, request: Any, exception: Exception) -> None:
         if self.request_filter and not self.request_filter(request):

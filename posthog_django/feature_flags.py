@@ -39,6 +39,10 @@ def _get_flag_cache() -> FeatureFlagResultCache | None:
     return _flag_cache
 
 
+def _feature_flags_enabled() -> bool:
+    return get_settings().enable_feature_flags
+
+
 def _resolve_distinct_id(*, request: Any | None, distinct_id: str | None) -> str | None:
     if distinct_id:
         return distinct_id
@@ -96,6 +100,9 @@ def get_feature_flag_result(
     disable_geoip: bool | None = None,
     device_id: str | None = None,
 ) -> FeatureFlagResult | None:
+    if not _feature_flags_enabled():
+        return None
+
     client = get_client()
     if client is None:
         return None
@@ -134,6 +141,9 @@ def get_feature_flag(
     device_id: str | None = None,
     use_cache: bool = True,
 ) -> Any | None:
+    if not _feature_flags_enabled():
+        return None
+
     client = get_client()
     if client is None:
         return None
@@ -192,6 +202,9 @@ def get_feature_flag_payload(
     disable_geoip: bool | None = None,
     device_id: str | None = None,
 ) -> Any | None:
+    if not _feature_flags_enabled():
+        return None
+
     client = get_client()
     if client is None:
         return None
@@ -229,6 +242,9 @@ def get_all_flags(
     device_id: str | None = None,
     flag_keys_to_evaluate: list[str] | None = None,
 ) -> dict[str, Any] | None:
+    if not _feature_flags_enabled():
+        return None
+
     client = get_client()
     if client is None:
         return None
@@ -264,6 +280,9 @@ def get_all_flags_and_payloads(
     device_id: str | None = None,
     flag_keys_to_evaluate: list[str] | None = None,
 ) -> dict[str, Any] | None:
+    if not _feature_flags_enabled():
+        return None
+
     client = get_client()
     if client is None:
         return None

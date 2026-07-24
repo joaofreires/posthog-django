@@ -31,6 +31,7 @@ class PosthogSettings:
     log_captured_exceptions: bool
     project_root: str | None
     privacy_mode: bool
+    enable_feature_flags: bool
     enable_local_evaluation: bool
     cache_alias: str
     flag_definitions_cache_ttl: int
@@ -45,6 +46,8 @@ class PosthogSettings:
     request_extra_tags: Callable[[Any], dict[str, Any]] | None
     request_filter: Callable[[Any], bool] | None
     capture_exceptions: bool
+    capture_views: bool
+    view_event_name: str
     on_error_mode: str
     validate_on_startup: bool
     validate_event_name: str
@@ -89,6 +92,7 @@ def get_settings() -> PosthogSettings:
         request_filter = None
 
     capture_exceptions = _get_setting("POSTHOG_MW_CAPTURE_EXCEPTIONS", True)
+    capture_views = _get_setting("POSTHOG_MW_CAPTURE_VIEWS", False)
 
     groups_resolver = _get_setting("POSTHOG_GROUPS_RESOLVER", None)
     if not callable(groups_resolver):
@@ -134,6 +138,7 @@ def get_settings() -> PosthogSettings:
         log_captured_exceptions=_get_setting("POSTHOG_LOG_CAPTURED_EXCEPTIONS", False),
         project_root=_get_setting("POSTHOG_PROJECT_ROOT", None),
         privacy_mode=_get_setting("POSTHOG_PRIVACY_MODE", False),
+        enable_feature_flags=bool(_get_setting("POSTHOG_ENABLE_FEATURE_FLAGS", True)),
         enable_local_evaluation=_get_setting("POSTHOG_ENABLE_LOCAL_EVALUATION", True),
         cache_alias=_get_setting("POSTHOG_CACHE_ALIAS", "default"),
         flag_definitions_cache_ttl=flag_definitions_cache_ttl,
@@ -152,6 +157,8 @@ def get_settings() -> PosthogSettings:
         request_extra_tags=request_extra_tags,
         request_filter=request_filter,
         capture_exceptions=bool(capture_exceptions),
+        capture_views=bool(capture_views),
+        view_event_name=str(_get_setting("POSTHOG_MW_VIEW_EVENT_NAME", "$pageview")),
         on_error_mode=on_error_mode,
         validate_on_startup=bool(_get_setting("POSTHOG_VALIDATE_ON_STARTUP", False)),
         validate_event_name=_get_setting(
