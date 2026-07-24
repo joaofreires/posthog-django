@@ -10,6 +10,8 @@ def index(request):
     capture("page_view", request=request, properties={"path": request.path})
     return JsonResponse({"status": "ok"})
 
+def hello(request):
+    return JsonResponse({"message": "Hello, world!"})
 
 def flags(request):
     enabled = feature_enabled("new-homepage", request=request)

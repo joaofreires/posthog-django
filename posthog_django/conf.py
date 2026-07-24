@@ -45,6 +45,8 @@ class PosthogSettings:
     request_extra_tags: Callable[[Any], dict[str, Any]] | None
     request_filter: Callable[[Any], bool] | None
     capture_exceptions: bool
+    capture_views: bool
+    view_event_name: str
     on_error_mode: str
     validate_on_startup: bool
     validate_event_name: str
@@ -89,6 +91,7 @@ def get_settings() -> PosthogSettings:
         request_filter = None
 
     capture_exceptions = _get_setting("POSTHOG_MW_CAPTURE_EXCEPTIONS", True)
+    capture_views = _get_setting("POSTHOG_MW_CAPTURE_VIEWS", False)
 
     groups_resolver = _get_setting("POSTHOG_GROUPS_RESOLVER", None)
     if not callable(groups_resolver):
@@ -152,6 +155,8 @@ def get_settings() -> PosthogSettings:
         request_extra_tags=request_extra_tags,
         request_filter=request_filter,
         capture_exceptions=bool(capture_exceptions),
+        capture_views=bool(capture_views),
+        view_event_name=str(_get_setting("POSTHOG_MW_VIEW_EVENT_NAME", "$pageview")),
         on_error_mode=on_error_mode,
         validate_on_startup=bool(_get_setting("POSTHOG_VALIDATE_ON_STARTUP", False)),
         validate_event_name=_get_setting(

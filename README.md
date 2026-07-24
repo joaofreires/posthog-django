@@ -69,6 +69,8 @@ def dashboard(request):
 - `POSTHOG_CODE_VARIABLES_IGNORE_PATTERNS`: list of regex patterns to ignore.
 - `POSTHOG_IN_APP_MODULES`: list of module prefixes for in-app frames.
 - `POSTHOG_MW_CAPTURE_EXCEPTIONS`: capture exceptions in middleware (default: True).
+- `POSTHOG_MW_CAPTURE_VIEWS`: capture an event after each completed response (default: False).
+- `POSTHOG_MW_VIEW_EVENT_NAME`: event name used for middleware view capture (default: `$pageview`).
 - `POSTHOG_MW_EXTRA_TAGS`: callable returning extra context tags.
 - `POSTHOG_MW_REQUEST_FILTER`: callable returning False to skip tracking.
 - `POSTHOG_MW_TAG_MAP`: callable to mutate tags before they are added.
