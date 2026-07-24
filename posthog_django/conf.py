@@ -31,6 +31,7 @@ class PosthogSettings:
     log_captured_exceptions: bool
     project_root: str | None
     privacy_mode: bool
+    enable_feature_flags: bool
     enable_local_evaluation: bool
     cache_alias: str
     flag_definitions_cache_ttl: int
@@ -137,6 +138,7 @@ def get_settings() -> PosthogSettings:
         log_captured_exceptions=_get_setting("POSTHOG_LOG_CAPTURED_EXCEPTIONS", False),
         project_root=_get_setting("POSTHOG_PROJECT_ROOT", None),
         privacy_mode=_get_setting("POSTHOG_PRIVACY_MODE", False),
+        enable_feature_flags=bool(_get_setting("POSTHOG_ENABLE_FEATURE_FLAGS", True)),
         enable_local_evaluation=_get_setting("POSTHOG_ENABLE_LOCAL_EVALUATION", True),
         cache_alias=_get_setting("POSTHOG_CACHE_ALIAS", "default"),
         flag_definitions_cache_ttl=flag_definitions_cache_ttl,

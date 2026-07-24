@@ -58,3 +58,16 @@ def test_feature_flag_cache_skipped_when_sending_events(settings, monkeypatch):
 
     assert value1 == value2 == "variant-a"
     assert len(client.calls) == 2
+
+
+def test_feature_flags_can_be_disabled(settings, monkeypatch):
+    settings.POSTHOG_ENABLE_FEATURE_FLAGS = False
+
+    def fail_if_client_is_created():
+        raise AssertionError("feature flag helpers should not create the SDK client")
+
+    monkeypatch.setattr(feature_flags, "get_client", fail_if_client_is_created)
+
+    assert feature_flags.feature_enabled("flag-a", distinct_id="user-1") is None
+    assert feature_flags.get_feature_flag("flag-a", distinct_id="user-1") is None
+    assert feature_flags.get_all_flags(distinct_id="user-1") is None

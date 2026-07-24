@@ -53,8 +53,14 @@ def _build_client() -> Client | None:
     if not config.enabled or config.disabled:
         return None
 
+    local_evaluation_enabled = (
+        config.enable_feature_flags
+        and config.enable_local_evaluation
+        and bool(config.personal_api_key)
+    )
+
     cache_provider = None
-    if config.flag_definitions_cache_ttl > 0:
+    if local_evaluation_enabled and config.flag_definitions_cache_ttl > 0:
         cache_provider = DjangoCacheFlagDefinitionCacheProvider(
             cache_alias=config.cache_alias,
             cache_prefix=config.flag_definitions_cache_prefix,
@@ -83,7 +89,7 @@ def _build_client() -> Client | None:
         log_captured_exceptions=config.log_captured_exceptions,
         project_root=config.project_root,
         privacy_mode=config.privacy_mode,
-        enable_local_evaluation=config.enable_local_evaluation,
+        enable_local_evaluation=local_evaluation_enabled,
         flag_definition_cache_provider=cache_provider,
     )
     return client
@@ -104,6 +110,11 @@ def validate_client() -> bool:
 
     error_state: dict[str, Exception | str | None] = {"error": None}
     base_handler = _resolve_on_error(config.on_error_mode)
+    local_evaluation_enabled = (
+        config.enable_feature_flags
+        and config.enable_local_evaluation
+        and bool(config.personal_api_key)
+    )
 
     def on_error(error, *args, **kwargs) -> None:  # noqa: ANN001
         error_state["error"] = error or "Unknown PostHog error"
@@ -131,7 +142,7 @@ def validate_client() -> bool:
         log_captured_exceptions=config.log_captured_exceptions,
         project_root=config.project_root,
         privacy_mode=config.privacy_mode,
-        enable_local_evaluation=config.enable_local_evaluation,
+        enable_local_evaluation=local_evaluation_enabled,
     )
 
     message_id = client.capture(

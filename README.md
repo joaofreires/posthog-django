@@ -58,6 +58,13 @@ def dashboard(request):
 
 - `POSTHOG_PROJECT_API_KEY` or `POSTHOG_API_KEY`: required.
 - `POSTHOG_PERSONAL_API_KEY`: required for local feature flag evaluation.
+- `POSTHOG_ENABLE_FEATURE_FLAGS`: enable feature flag helpers and SDK local
+  evaluation support (default: True). Set to `False` when feature flags are not
+  used.
+- `POSTHOG_ENABLE_LOCAL_EVALUATION`: poll and evaluate feature flags locally
+  (default: True when `POSTHOG_PERSONAL_API_KEY` is configured; otherwise it is
+  automatically disabled). This does not disable remote feature flag evaluation;
+  use `POSTHOG_ENABLE_FEATURE_FLAGS=False` to turn feature flags off entirely.
 - `POSTHOG_HOST`: PostHog host (default `https://app.posthog.com`).
 - `POSTHOG_ENABLED`: enable/disable integration (default: enabled if API key is set).
 - `POSTHOG_DEBUG`: enable SDK debug logging.
