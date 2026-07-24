@@ -64,7 +64,8 @@ def dashboard(request):
 - `POSTHOG_ENABLE_LOCAL_EVALUATION`: poll and evaluate feature flags locally
   (default: True when `POSTHOG_PERSONAL_API_KEY` is configured; otherwise it is
   automatically disabled). This does not disable remote feature flag evaluation;
-  use `POSTHOG_ENABLE_FEATURE_FLAGS=False` to turn feature flags off entirely.
+  use `POSTHOG_ENABLE_FEATURE_FLAGS=False` to disable the `posthog_django`
+  feature flag helpers and SDK local evaluation.
 - `POSTHOG_HOST`: PostHog host (default `https://app.posthog.com`).
 - `POSTHOG_ENABLED`: enable/disable integration (default: enabled if API key is set).
 - `POSTHOG_DEBUG`: enable SDK debug logging.
@@ -120,6 +121,10 @@ with new_context():
 
 ## Notes
 
+- `POSTHOG_ENABLE_FEATURE_FLAGS=False` does not modify the raw PostHog SDK client
+  returned by `get_client()`, `posthog.client()`, or exposed as `request.posthog`.
+  Calls made directly on that client bypass the `posthog_django` feature flag
+  helpers and their settings.
 - Feature flag definition caching uses the configured Django cache backend and
   is enabled by default when a cache is available.
 - Result caching for feature flags is opt-in by setting

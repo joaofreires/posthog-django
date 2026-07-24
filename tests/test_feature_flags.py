@@ -70,4 +70,7 @@ def test_feature_flags_can_be_disabled(settings, monkeypatch):
 
     assert feature_flags.feature_enabled("flag-a", distinct_id="user-1") is None
     assert feature_flags.get_feature_flag("flag-a", distinct_id="user-1") is None
+    assert feature_flags.get_feature_flag_result("flag-a", distinct_id="user-1") is None
+    assert feature_flags.get_feature_flag_payload("flag-a", distinct_id="user-1") is None
     assert feature_flags.get_all_flags(distinct_id="user-1") is None
+    assert feature_flags.get_all_flags_and_payloads(distinct_id="user-1") is None
